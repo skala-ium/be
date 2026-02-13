@@ -1,0 +1,64 @@
+package com.example.skala_ium.bookmark.api;
+
+import com.cliptripbe.feature.bookmark.dto.request.CreateBookmarkRequest;
+import com.cliptripbe.feature.bookmark.dto.request.UpdateBookmarkRequest;
+import com.cliptripbe.feature.bookmark.dto.response.BookmarkInfoResponse;
+import com.cliptripbe.feature.bookmark.dto.response.BookmarkListResponse;
+import com.cliptripbe.feature.place.dto.request.PlaceInfoRequest;
+import com.cliptripbe.global.auth.security.CustomerDetails;
+import com.cliptripbe.global.response.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
+
+@Tag(name = "북마크 관련 API")
+public interface BookmarkControllerDocs {
+
+    @Operation(summary = "북마크 만들기, \n로그인 필요")
+    ApiResponse<Long> createBookmark(CustomerDetails customerDetails,
+        CreateBookmarkRequest CreateBookmarkRequest);
+
+    @Operation(summary = "북마크 수정하기, \n로그인 필요,put 메서드")
+    ApiResponse<Long> updateBookmark(
+        CustomerDetails customerDetails,
+        Long bookmarkId,
+        UpdateBookmarkRequest updateBookmarkRequest
+    );
+
+    @Operation(summary = "북마크에 하나의 장소 추가하기, \n로그인 필요")
+    ApiResponse<Long> addPlaceToBookmark(
+        CustomerDetails customerDetails,
+        Long bookmarkId,
+        PlaceInfoRequest placeInfoRequest
+    );
+
+    @Operation(summary = "북마크에 하나의 장소 삭제하기 (placeId), \n로그인 필요")
+    ApiResponse<Long> deletePlaceFromBookmarkByPlaceId(
+        CustomerDetails customerDetails,
+        Long bookmarkId,
+        Long placeId
+    );
+
+    @Operation(summary = "북마크에 하나의 장소 삭제하기 (kakaoPlaceId), \n로그인 필요")
+    ApiResponse<String> deletePlaceFromBookmarkByKakaoPlaceId(
+        CustomerDetails customerDetails,
+        Long bookmarkId,
+        String kakaoPlaceId
+    );
+
+
+    @Operation(summary = "유저 북마크 전체 조회하기, \n로그인 필요")
+    ApiResponse<List<BookmarkListResponse>> getUserBookmark(CustomerDetails customerDetails);
+
+    @Operation(summary = "북마크 상세 조회하기, \n로그인 필요")
+    ApiResponse<BookmarkInfoResponse> getBookmarkById(
+        CustomerDetails customerDetails,
+        Long bookmarkId
+    );
+
+    @Operation(summary = "북마크 삭제하기, \n로그인 필요")
+    ApiResponse<?> deleteBookmark(
+        CustomerDetails customerDetails,
+        Long bookmarkId
+    );
+}
