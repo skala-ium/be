@@ -1,7 +1,7 @@
 package com.example.skala_ium.global.response.exception;
 
-import com.cliptripbe.global.response.ApiResponse;
-import com.cliptripbe.global.response.type.ErrorType;
+import com.example.skala_ium.global.response.ApiResponse;
+import com.example.skala_ium.global.response.type.ErrorType;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.MethodArgumentNotValidException;

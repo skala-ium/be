@@ -1,8 +1,8 @@
 package com.example.skala_ium.global.config;
 
-import com.cliptripbe.feature.user.domain.type.Role;
-import com.cliptripbe.global.auth.jwt.JwtAuthenticationFilter;
-import com.cliptripbe.global.auth.jwt.component.JwtTokenProvider;
+import com.example.skala_ium.global.auth.jwt.JwtAuthenticationFilter;
+import com.example.skala_ium.global.auth.jwt.component.JwtTokenProvider;
+import com.example.skala_ium.global.auth.security.Role;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
