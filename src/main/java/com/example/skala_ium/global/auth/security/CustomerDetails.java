@@ -1,7 +1,7 @@
 package com.example.skala_ium.global.auth.security;
 
 
-import com.cliptripbe.feature.user.domain.entity.User;
+import com.example.skala_ium.user.domain.entity.User;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;

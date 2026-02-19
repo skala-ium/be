@@ -1,11 +1,11 @@
 package com.example.skala_ium.global.auth.jwt;
 
-import static com.cliptripbe.global.auth.jwt.entity.TokenType.ACCESS_TOKEN;
+import static com.example.skala_ium.global.auth.jwt.entity.TokenType.ACCESS_TOKEN;
 
-import com.cliptripbe.global.auth.jwt.component.JwtTokenProvider;
-import com.cliptripbe.global.response.ApiResponse;
-import com.cliptripbe.global.response.exception.CustomException;
-import com.cliptripbe.global.response.type.ErrorType;
+import com.example.skala_ium.global.auth.jwt.component.JwtTokenProvider;
+import com.example.skala_ium.global.response.ApiResponse;
+import com.example.skala_ium.global.response.exception.CustomException;
+import com.example.skala_ium.global.response.type.ErrorType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -68,7 +68,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-
     private void handleException(HttpServletResponse response, CustomException e)
         throws IOException {
         if (e != null) {
@@ -78,7 +77,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String jsonResponse = new ObjectMapper().writeValueAsString(
                 ApiResponse.error(e.getErrorType())
             );
-            response.getWriter().write(jsonResponse);  // ApiResponse의 내용을 JSON으로 변환하여 작성
+            response.getWriter().write(jsonResponse);
         } else {
             response.getWriter().write("{\"error\": \"An unexpected error occurred.\"}");
         }

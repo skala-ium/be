@@ -1,12 +1,12 @@
 package com.example.skala_ium.global.auth.jwt.component;
 
-import static com.cliptripbe.global.auth.jwt.entity.TokenType.ACCESS_TOKEN;
-import static com.cliptripbe.global.auth.jwt.entity.TokenType.REFRESH_TOKEN;
+import static com.example.skala_ium.global.auth.jwt.entity.TokenType.ACCESS_TOKEN;
+import static com.example.skala_ium.global.auth.jwt.entity.TokenType.REFRESH_TOKEN;
 
-import com.cliptripbe.global.auth.jwt.entity.JwtToken;
-import com.cliptripbe.global.auth.jwt.entity.TokenDto;
-import com.cliptripbe.global.auth.jwt.entity.TokenType;
-import com.cliptripbe.global.auth.security.CustomerDetailsService;
+import com.example.skala_ium.global.auth.jwt.entity.JwtToken;
+import com.example.skala_ium.global.auth.jwt.entity.TokenDto;
+import com.example.skala_ium.global.auth.jwt.entity.TokenType;
+import com.example.skala_ium.global.auth.security.CustomerDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -30,7 +30,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
 
 @Slf4j
 @Component

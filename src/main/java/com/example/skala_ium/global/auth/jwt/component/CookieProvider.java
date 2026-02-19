@@ -1,8 +1,8 @@
 package com.example.skala_ium.global.auth.jwt.component;
 
-import static com.cliptripbe.global.constant.Constant.MILLIS_PER_SECOND;
+import static com.example.skala_ium.global.constant.Constant.MILLIS_PER_SECOND;
 
-import com.cliptripbe.global.auth.jwt.entity.TokenType;
+import com.example.skala_ium.global.auth.jwt.entity.TokenType;
 import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

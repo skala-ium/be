@@ -1,7 +1,7 @@
 package com.example.skala_ium.global.auth.security;
 
-import com.cliptripbe.feature.user.domain.entity.User;
-import com.cliptripbe.feature.user.domain.service.UserLoader;
+import com.example.skala_ium.user.domain.entity.User;
+import com.example.skala_ium.user.domain.service.UserLoader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
