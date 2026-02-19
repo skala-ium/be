@@ -45,9 +45,9 @@ public class SwaggerConfig {
     }
 
     private static Info apiInfo() {
-        return new Info().title("Clip Trip API")
+        return new Info().title("Skala IUM API")
             .version("1.0")
-            .description("My API Description");
+            .description("과제 중심 학습 관리 시스템 API");
     }
 
     @Bean

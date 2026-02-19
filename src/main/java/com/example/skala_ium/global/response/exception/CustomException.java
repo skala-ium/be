@@ -1,6 +1,6 @@
 package com.example.skala_ium.global.response.exception;
 
-import com.cliptripbe.global.response.type.ErrorType;
+import com.example.skala_ium.global.response.type.ErrorType;
 import lombok.Getter;
 
 @Getter

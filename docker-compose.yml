@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  db:
+    # latest 대신 안정적인 16버전(또는 17)을 명시하는 게 아키텍처상 안전합니다.
+    image: postgres:16-alpine
+    container_name: skala-postgres
+    environment:
+      POSTGRES_DB: skala_db
+      POSTGRES_USER: sangyoon
+      POSTGRES_PASSWORD: password123
+      # 이 옵션은 데이터 경로 충돌을 방지하는 데 도움을 줍니다.
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - skala-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sangyoon -d skala_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: skala-api
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    # 앱 컨테이너가 뜨기 전에 DB 네트워크 대기 시간을 조금 더 벌어주기 위한 설정
+    restart: on-failure
+    networks:
+      - skala-network
+
+volumes:
+  # 기존에 꼬인 데이터가 있다면 아래 명령어로 삭제 후 실행해야 합니다.
+  postgres_data:
+
+networks:
+  skala-network:
+    driver: bridge

@@ -1,8 +1,8 @@
 package com.example.skala_ium.global.response;
 
-import com.cliptripbe.global.response.type.ErrorType;
-import com.cliptripbe.global.response.type.ResultType;
-import com.cliptripbe.global.response.type.SuccessType;
+import com.example.skala_ium.global.response.type.ErrorType;
+import com.example.skala_ium.global.response.type.ResultType;
+import com.example.skala_ium.global.response.type.SuccessType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.swagger.v3.oas.annotations.media.Schema;
