@@ -2,12 +2,15 @@ package com.example.skala_ium.submission.api;
 
 import com.example.skala_ium.global.auth.security.CustomerDetails;
 import com.example.skala_ium.global.response.ApiResponse;
+import com.example.skala_ium.global.response.exception.CustomException;
+import com.example.skala_ium.global.response.type.ErrorType;
 import com.example.skala_ium.global.response.type.SuccessType;
 import com.example.skala_ium.submission.application.SubmissionService;
 import com.example.skala_ium.submission.dto.request.CreateSubmissionRequest;
 import com.example.skala_ium.submission.dto.response.MySubmissionResponse;
 import com.example.skala_ium.submission.dto.response.SubmissionResponse;
 import com.example.skala_ium.submission.dto.response.SubmissionStatusResponse;
+import com.example.skala_ium.user.domain.entity.Student;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -37,7 +40,8 @@ public class SubmissionController {
         @AuthenticationPrincipal CustomerDetails customerDetails,
         @Valid @RequestBody CreateSubmissionRequest request
     ) {
-        submissionService.submitAssignment(assignmentId, customerDetails.getUser(), request);
+        Student student = requireStudent(customerDetails);
+        submissionService.submitAssignment(assignmentId, student, request);
         return ApiResponse.success(SuccessType.CREATED);
     }
 
@@ -66,8 +70,9 @@ public class SubmissionController {
         @PathVariable Long assignmentId,
         @AuthenticationPrincipal CustomerDetails customerDetails
     ) {
+        Student student = requireStudent(customerDetails);
         SubmissionResponse response = submissionService
-            .getMySubmissionForAssignment(assignmentId, customerDetails.getUser());
+            .getMySubmissionForAssignment(assignmentId, student);
         return ApiResponse.success(SuccessType.OK, response);
     }
 
@@ -76,7 +81,15 @@ public class SubmissionController {
     public ApiResponse<List<MySubmissionResponse>> getMySubmissions(
         @AuthenticationPrincipal CustomerDetails customerDetails
     ) {
-        List<MySubmissionResponse> response = submissionService.getMySubmissions(customerDetails.getUser());
+        Student student = requireStudent(customerDetails);
+        List<MySubmissionResponse> response = submissionService.getMySubmissions(student);
         return ApiResponse.success(SuccessType.OK, response);
+    }
+
+    private Student requireStudent(CustomerDetails customerDetails) {
+        if (customerDetails.getAuthenticatable() instanceof Student student) {
+            return student;
+        }
+        throw new CustomException(ErrorType.INVALID_ROLE);
     }
 }

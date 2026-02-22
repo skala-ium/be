@@ -1,7 +1,8 @@
 package com.example.skala_ium.assignment.domain.entity;
 
-import com.example.skala_ium.course.domain.entity.Course;
+import com.example.skala_ium.class_.domain.entity.Course;
 import com.example.skala_ium.global.entity.BaseTimeEntity;
+import com.example.skala_ium.user.domain.entity.Professor;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,8 +34,12 @@ public class Assignment extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "course_id")
+    @JoinColumn(name = "class_id")
     private Course course;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "professor_id")
+    private Professor professor;
 
     @Column(name = "title", nullable = false, length = 200)
     private String title;
@@ -48,24 +53,21 @@ public class Assignment extends BaseTimeEntity {
     @Column(name = "slack_post_ts", length = 100)
     private String slackPostTs;
 
-    @Column(name = "topic", length = 50)
+    @Column(name = "topic", length = 100)
     private String topic;
-
-    @Column(name = "week", length = 20)
-    private String week;
 
     @OneToMany(mappedBy = "assignment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AssignmentRequirement> requirements = new ArrayList<>();
 
     @Builder
-    public Assignment(Course course, String title, String content, LocalDateTime deadline,
-                      String slackPostTs, String topic, String week) {
+    public Assignment(Course course, Professor professor, String title, String content,
+                      LocalDateTime deadline, String slackPostTs, String topic) {
         this.course = course;
+        this.professor = professor;
         this.title = title;
         this.content = content;
         this.deadline = deadline;
         this.slackPostTs = slackPostTs;
         this.topic = topic;
-        this.week = week;
     }
 }

@@ -26,7 +26,7 @@ public class UserController {
     public ApiResponse<UserInfoResponse> getMyInfo(
         @AuthenticationPrincipal CustomerDetails customerDetails
     ) {
-        UserInfoResponse response = userService.getMyInfo(customerDetails.getUser());
+        UserInfoResponse response = userService.getMyInfo(customerDetails.getAuthenticatable());
         return ApiResponse.success(SuccessType.OK, response);
     }
 }

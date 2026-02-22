@@ -12,7 +12,7 @@ services:
       # 이 옵션은 데이터 경로 충돌을 방지하는 데 도움을 줍니다.
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
