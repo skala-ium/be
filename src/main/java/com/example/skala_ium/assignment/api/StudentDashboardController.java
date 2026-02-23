@@ -30,7 +30,7 @@ public class StudentDashboardController {
         @AuthenticationPrincipal CustomerDetails customerDetails
     ) {
         List<StudentAssignmentResponse> response = studentDashboardService
-            .getMyAssignments(customerDetails.getUser(), courseId);
+            .getMyAssignments(customerDetails.getAuthenticatable(), courseId);
         return ApiResponse.success(SuccessType.OK, response);
     }
 }

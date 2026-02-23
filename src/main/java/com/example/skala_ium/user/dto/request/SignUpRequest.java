@@ -1,24 +1,22 @@
 package com.example.skala_ium.user.dto.request;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 public record SignUpRequest(
-    @NotBlank(message = "이메일은 필수입니다.")
-    @Email(message = "올바른 이메일 형식이 아닙니다.")
-    String email,
+    @NotBlank(message = "이름은 필수입니다.")
+    String name,
 
     @NotBlank(message = "비밀번호는 필수입니다.")
     String password,
 
-    @NotBlank(message = "이름은 필수입니다.")
-    String name,
-
     @NotBlank(message = "역할은 필수입니다.")
     String role,
 
-    String major,
+    // Professor 전용 필드
+    String email,
 
-    String department
+    // Student 전용 필드
+    String slackUserId,
+    String major
 ) {
 }

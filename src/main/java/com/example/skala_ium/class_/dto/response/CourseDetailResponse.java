@@ -1,5 +1,6 @@
-package com.example.skala_ium.course.dto.response;
+package com.example.skala_ium.class_.dto.response;
 
+import com.example.skala_ium.class_.domain.ClassGroup;
 import java.util.List;
 import lombok.Builder;
 
@@ -7,9 +8,8 @@ import lombok.Builder;
 public record CourseDetailResponse(
     Long courseId,
     String courseName,
-    String semester,
-    String classGroup,
-    String professorName,
+    Integer generation,
+    ClassGroup classGroup,
     long studentCount,
     List<StudentInfoResponse> students
 ) {

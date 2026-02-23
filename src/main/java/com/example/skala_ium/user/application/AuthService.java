@@ -6,15 +6,16 @@ import static com.example.skala_ium.global.auth.jwt.entity.TokenType.REFRESH_TOK
 import com.example.skala_ium.global.auth.jwt.component.CookieProvider;
 import com.example.skala_ium.global.auth.jwt.component.JwtTokenProvider;
 import com.example.skala_ium.global.auth.jwt.entity.JwtToken;
-import com.example.skala_ium.global.auth.security.Role;
+import com.example.skala_ium.global.auth.security.Authenticatable;
+import com.example.skala_ium.global.auth.security.CustomerDetails;
 import com.example.skala_ium.global.response.exception.CustomException;
 import com.example.skala_ium.global.response.type.ErrorType;
 import com.example.skala_ium.user.domain.entity.Professor;
 import com.example.skala_ium.user.domain.entity.Student;
-import com.example.skala_ium.user.domain.entity.User;
 import com.example.skala_ium.user.dto.request.LoginRequest;
 import com.example.skala_ium.user.dto.request.SignUpRequest;
-import com.example.skala_ium.user.infrastructure.UserRepository;
+import com.example.skala_ium.user.infrastructure.ProfessorRepository;
+import com.example.skala_ium.user.infrastructure.StudentRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,54 +29,69 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AuthService {
 
-    private final UserRepository userRepository;
+    private final ProfessorRepository professorRepository;
+    private final StudentRepository studentRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final CookieProvider cookieProvider;
 
     public void signUp(SignUpRequest request) {
-        if (userRepository.existsByEmail(request.email())) {
-            throw new CustomException(ErrorType.DUPLICATE_EMAIL);
-        }
-
         String encodedPassword = passwordEncoder.encode(request.password());
-        String roleValue = Role.USER.getRole();
 
-        User user;
         if ("PROFESSOR".equalsIgnoreCase(request.role())) {
-            user = Professor.builder()
+            if (request.email() == null || request.email().isBlank()) {
+                throw new CustomException(ErrorType.BAD_REQUEST);
+            }
+            if (professorRepository.existsByEmail(request.email())) {
+                throw new CustomException(ErrorType.DUPLICATE_EMAIL);
+            }
+            Professor professor = Professor.builder()
                 .name(request.name())
                 .email(request.email())
                 .password(encodedPassword)
-                .role(roleValue)
-                .department(request.department())
                 .build();
+            professorRepository.save(professor);
+
         } else if ("STUDENT".equalsIgnoreCase(request.role())) {
-            user = Student.builder()
+            if (request.slackUserId() == null || request.slackUserId().isBlank()) {
+                throw new CustomException(ErrorType.BAD_REQUEST);
+            }
+            if (studentRepository.existsBySlackUserId(request.slackUserId())) {
+                throw new CustomException(ErrorType.DUPLICATE_EMAIL);
+            }
+            Student student = Student.builder()
                 .name(request.name())
-                .email(request.email())
+                .slackUserId(request.slackUserId())
                 .password(encodedPassword)
-                .role(roleValue)
                 .major(request.major())
                 .build();
+            studentRepository.save(student);
+
+        } else {
+            throw new CustomException(ErrorType.INVALID_ROLE);
+        }
+    }
+
+    public void login(LoginRequest request, HttpServletResponse response) {
+        Authenticatable authenticatable;
+
+        if ("PROFESSOR".equalsIgnoreCase(request.role())) {
+            authenticatable = professorRepository.findByEmail(request.identifier())
+                .orElseThrow(() -> new CustomException(ErrorType.FAIL_AUTHENTICATION));
+        } else if ("STUDENT".equalsIgnoreCase(request.role())) {
+            authenticatable = studentRepository.findBySlackUserId(request.identifier())
+                .orElseThrow(() -> new CustomException(ErrorType.FAIL_AUTHENTICATION));
         } else {
             throw new CustomException(ErrorType.INVALID_ROLE);
         }
 
-        userRepository.save(user);
-    }
-
-    public void login(LoginRequest request, HttpServletResponse response) {
-        User user = userRepository.findByEmail(request.email())
-            .orElseThrow(() -> new CustomException(ErrorType.FAIL_AUTHENTICATION));
-
-        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+        if (!passwordEncoder.matches(request.password(), authenticatable.getPassword())) {
             throw new CustomException(ErrorType.FAIL_AUTHENTICATION);
         }
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(
-            user.getEmail(), null,
-            new com.example.skala_ium.global.auth.security.CustomerDetails(user).getAuthorities()
+            authenticatable.getPrincipal(), null,
+            new CustomerDetails(authenticatable).getAuthorities()
         );
 
         JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);

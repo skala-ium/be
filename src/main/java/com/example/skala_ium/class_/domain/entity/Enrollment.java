@@ -1,4 +1,4 @@
-package com.example.skala_ium.course.domain.entity;
+package com.example.skala_ium.class_.domain.entity;
 
 import com.example.skala_ium.global.entity.BaseTimeEntity;
 import com.example.skala_ium.user.domain.entity.Student;

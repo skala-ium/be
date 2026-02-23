@@ -9,9 +9,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
 
-    @EntityGraph(attributePaths = {"course", "course.professor"})
+    @EntityGraph(attributePaths = {"course", "professor"})
     Page<Assignment> findByCourseId(Long courseId, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"requirements", "course", "course.professor"})
+    @EntityGraph(attributePaths = {"requirements", "course", "professor"})
     Optional<Assignment> findWithDetailsById(Long id);
 }

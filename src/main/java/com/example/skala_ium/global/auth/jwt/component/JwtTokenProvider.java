@@ -6,6 +6,7 @@ import static com.example.skala_ium.global.auth.jwt.entity.TokenType.REFRESH_TOK
 import com.example.skala_ium.global.auth.jwt.entity.JwtToken;
 import com.example.skala_ium.global.auth.jwt.entity.TokenDto;
 import com.example.skala_ium.global.auth.jwt.entity.TokenType;
+import com.example.skala_ium.global.auth.security.CustomerDetails;
 import com.example.skala_ium.global.auth.security.CustomerDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -52,7 +53,8 @@ public class JwtTokenProvider {
             .map(GrantedAuthority::getAuthority).collect(
                 Collectors.joining(","));
 
-        TokenDto tokenDto = createAllToken(authentication.getName(), authorities);
+        String role = extractRoleFromAuthorities(authorities);
+        TokenDto tokenDto = createAllToken(authentication.getName(), authorities, role);
 
         return JwtToken.builder()
             .grantType(authorities)
@@ -128,19 +130,31 @@ public class JwtTokenProvider {
         return null;
     }
 
-    private TokenDto createAllToken(String userId, String role) {
+    private String extractRoleFromAuthorities(String authorities) {
+        // authorities 형태: "ROLE_PROFESSOR" or "ROLE_STUDENT"
+        // role claim에는 "PROFESSOR" or "STUDENT" 저장
+        if (authorities.contains("PROFESSOR")) {
+            return "PROFESSOR";
+        } else if (authorities.contains("STUDENT")) {
+            return "STUDENT";
+        }
+        return "USER";
+    }
+
+    private TokenDto createAllToken(String principal, String auth, String role) {
         return TokenDto.builder()
-            .accessToken(createToken(userId, role, ACCESS_TOKEN))
-            .refreshToken(createToken(userId, role, REFRESH_TOKEN))
+            .accessToken(createToken(principal, auth, role, ACCESS_TOKEN))
+            .refreshToken(createToken(principal, auth, role, REFRESH_TOKEN))
             .build();
     }
 
-    private String createToken(String email, String authorities, TokenType type) {
+    private String createToken(String principal, String authorities, String role, TokenType type) {
         long now = new Date().getTime();
         long validTime = type.getValidTime();
         return Jwts.builder()
-            .setSubject(email)
+            .setSubject(principal)
             .claim("auth", authorities)
+            .claim("role", role)
             .claim("type", type.getName())
             .setExpiration(new Date(now + validTime))
             .signWith(key, SignatureAlgorithm.HS256)

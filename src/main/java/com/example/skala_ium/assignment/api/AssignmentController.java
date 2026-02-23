@@ -21,12 +21,13 @@ public class AssignmentController implements AssignmentControllerDocs {
     private final AssignmentService assignmentService;
 
     @Override
-    @GetMapping("/courses/{courseId}/assignments")
-    public ApiResponse<Page<AssignmentListResponse>> getAssignments(
-        @PathVariable Long courseId,
+    @GetMapping("/classes/{classId}/assignments")
+    public ApiResponse<Page<AssignmentListResponse>>
+    getAssignments(
+        @PathVariable Long classId,
         Pageable pageable
     ) {
-        Page<AssignmentListResponse> assignments = assignmentService.getAssignments(courseId, pageable);
+        Page<AssignmentListResponse> assignments = assignmentService.getAssignments(classId, pageable);
         return ApiResponse.success(SuccessType.OK, assignments);
     }
 

@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 public interface AssignmentControllerDocs {
 
     @Operation(summary = "특정 강의의 과제 목록 조회 (페이징)")
-    ApiResponse<Page<AssignmentListResponse>> getAssignments(Long courseId, Pageable pageable);
+    ApiResponse<Page<AssignmentListResponse>> getAssignments(Long classesId, Pageable pageable);
 
     @Operation(summary = "과제 상세 조회")
     ApiResponse<AssignmentDetailResponse> getAssignmentDetail(Long assignmentId);

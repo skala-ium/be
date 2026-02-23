@@ -1,10 +1,7 @@
 package com.example.skala_ium.global.auth.security;
 
-
-import com.example.skala_ium.user.domain.entity.User;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,23 +12,21 @@ import org.springframework.security.core.userdetails.UserDetails;
 @RequiredArgsConstructor
 public class CustomerDetails implements UserDetails {
 
-    private final User user;
+    private final Authenticatable authenticatable;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.stream(user.getRole().split(","))
-            .map(SimpleGrantedAuthority::new)
-            .collect(Collectors.toList());
+        return List.of(new SimpleGrantedAuthority("ROLE_" + authenticatable.getRole()));
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return authenticatable.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getEmail();
+        return authenticatable.getPrincipal();
     }
 
     @Override

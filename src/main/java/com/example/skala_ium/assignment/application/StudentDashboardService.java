@@ -3,9 +3,9 @@ package com.example.skala_ium.assignment.application;
 import com.example.skala_ium.assignment.domain.entity.Assignment;
 import com.example.skala_ium.assignment.dto.response.StudentAssignmentResponse;
 import com.example.skala_ium.assignment.infrastructure.AssignmentRepository;
+import com.example.skala_ium.global.auth.security.Authenticatable;
 import com.example.skala_ium.submission.domain.entity.Submission;
 import com.example.skala_ium.submission.infrastructure.SubmissionRepository;
-import com.example.skala_ium.user.domain.entity.User;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -21,14 +21,14 @@ public class StudentDashboardService {
     private final AssignmentRepository assignmentRepository;
     private final SubmissionRepository submissionRepository;
 
-    public List<StudentAssignmentResponse> getMyAssignments(User user, Long courseId) {
+    public List<StudentAssignmentResponse> getMyAssignments(Authenticatable authenticatable, Long courseId) {
         List<Assignment> assignments = assignmentRepository.findByCourseId(courseId, Pageable.unpaged())
             .getContent();
 
         return assignments.stream()
             .map(assignment -> {
                 Optional<Submission> submission = submissionRepository
-                    .findByAssignmentIdAndStudentId(assignment.getId(), user.getId());
+                    .findByAssignmentIdAndStudentId(assignment.getId(), authenticatable.getId());
                 boolean submitted = submission.isPresent();
                 String status = submitted ? submission.get().getStatus().name() : "NOT_SUBMITTED";
 
