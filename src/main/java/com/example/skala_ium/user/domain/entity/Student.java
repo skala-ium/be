@@ -1,21 +1,15 @@
 package com.example.skala_ium.user.domain.entity;
 
-import com.example.skala_ium.class_.domain.entity.Course;
+import com.example.skala_ium.clazz.domain.entity.Clazz;
 import com.example.skala_ium.global.auth.security.Authenticatable;
 import com.example.skala_ium.global.entity.BaseTimeEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "student")
@@ -24,9 +18,9 @@ import lombok.NoArgsConstructor;
 public class Student extends BaseTimeEntity implements Authenticatable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "student_id")
-    private Long id;
+    private UUID id;
 
     @Column(name = "name", nullable = false, length = 50)
     private String name;
@@ -42,19 +36,19 @@ public class Student extends BaseTimeEntity implements Authenticatable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "class_id")
-    private Course course;
+    private Clazz clazz;
 
     @Builder
-    public Student(String name, String slackUserId, String password, String major, Course course) {
+    public Student(String name, String slackUserId, String password, String major, Clazz clazz) {
         this.name = name;
         this.slackUserId = slackUserId;
         this.password = password;
         this.major = major;
-        this.course = course;
+        this.clazz = clazz;
     }
 
     @Override
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 

@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import lombok.RequiredArgsConstructor;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -45,7 +45,7 @@ public class AiVerificationService {
         this.objectMapper = objectMapper;
     }
 
-    public VerificationResponse verify(Long submissionId) {
+    public VerificationResponse verify(UUID submissionId) {
         Submission submission = submissionRepository.findById(submissionId)
             .orElseThrow(() -> new CustomException(ErrorType.SUBMISSION_NOT_FOUND));
 
@@ -120,7 +120,7 @@ public class AiVerificationService {
     }
 
     @Transactional(readOnly = true)
-    public VerificationResponse getVerification(Long submissionId) {
+    public VerificationResponse getVerification(UUID submissionId) {
         Submission submission = submissionRepository.findById(submissionId)
             .orElseThrow(() -> new CustomException(ErrorType.SUBMISSION_NOT_FOUND));
 
@@ -161,11 +161,11 @@ public class AiVerificationService {
         return String.format("""
             다음은 과제의 요구사항과 학생이 제출한 내용입니다.
             요구사항을 충족하는지 판단하고, JSON 형식으로 응답해주세요.
-
+            
             요구사항: %s
-
+            
             제출 내용: %s
-
+            
             응답 형식 (JSON만 반환):
             {"isMet": true/false, "feedback": "판단 근거 설명"}
             """, requirementContent, submissionContent);

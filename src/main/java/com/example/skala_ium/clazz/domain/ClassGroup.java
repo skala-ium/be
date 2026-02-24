@@ -1,6 +1,7 @@
-package com.example.skala_ium.class_.domain;
+package com.example.skala_ium.clazz.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -9,11 +10,11 @@ public enum ClassGroup {
     AI, CLOUD;
 
     private static final Map<String, ClassGroup> lookup =
-        Arrays.stream(ClassGroup.values())
-            .collect(Collectors.toMap(g -> g.name().toUpperCase(), g -> g));
+            Arrays.stream(ClassGroup.values())
+                    .collect(Collectors.toMap(g -> g.name().toUpperCase(), g -> g));
 
     @JsonCreator
-    public static ClassGroup from(String value){
+    public static ClassGroup from(String value) {
         if (value == null) return null;
         ClassGroup group = lookup.get(value.toUpperCase());
         if (group == null) {

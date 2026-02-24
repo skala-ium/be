@@ -8,6 +8,7 @@ import com.example.skala_ium.submission.domain.entity.Submission;
 import com.example.skala_ium.submission.infrastructure.SubmissionRepository;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,8 @@ public class StudentDashboardService {
     private final AssignmentRepository assignmentRepository;
     private final SubmissionRepository submissionRepository;
 
-    public List<StudentAssignmentResponse> getMyAssignments(Authenticatable authenticatable, Long courseId) {
-        List<Assignment> assignments = assignmentRepository.findByCourseId(courseId, Pageable.unpaged())
+    public List<StudentAssignmentResponse> getMyAssignments(Authenticatable authenticatable, UUID courseId) {
+        List<Assignment> assignments = assignmentRepository.findByClazzId(courseId, Pageable.unpaged())
             .getContent();
 
         return assignments.stream()

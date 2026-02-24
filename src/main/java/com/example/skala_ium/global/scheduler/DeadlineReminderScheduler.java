@@ -8,6 +8,7 @@ import com.example.skala_ium.user.domain.entity.Student;
 import com.example.skala_ium.user.infrastructure.StudentRepository;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -33,8 +34,8 @@ public class DeadlineReminderScheduler {
             .toList();
 
         for (Assignment assignment : assignments) {
-            Long courseId = assignment.getCourse().getId();
-            List<Student> students = studentRepository.findByCourseId(courseId);
+            UUID courseId = assignment.getClazz().getId();
+            List<Student> students = studentRepository.findByClazzId(courseId);
 
             for (Student student : students) {
                 boolean hasSubmitted = submissionRepository

@@ -16,6 +16,7 @@ import com.example.skala_ium.user.infrastructure.StudentRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +31,7 @@ public class SubmissionService {
     private final StudentRepository studentRepository;
 
     @Transactional
-    public void submitAssignment(Long assignmentId, Student student, CreateSubmissionRequest request) {
+    public void submitAssignment(UUID assignmentId, Student student, CreateSubmissionRequest request) {
         Assignment assignment = assignmentRepository.findById(assignmentId)
             .orElseThrow(() -> new CustomException(ErrorType.ASSIGNMENT_NOT_FOUND));
 
@@ -55,7 +56,7 @@ public class SubmissionService {
         submissionRepository.save(submission);
     }
 
-    public List<SubmissionResponse> getSubmissionsByAssignment(Long assignmentId) {
+    public List<SubmissionResponse> getSubmissionsByAssignment(UUID assignmentId) {
         return submissionRepository.findByAssignmentId(assignmentId).stream()
             .map(submission -> SubmissionResponse.builder()
                 .submissionId(submission.getId())
@@ -68,8 +69,8 @@ public class SubmissionService {
             .toList();
     }
 
-    public List<SubmissionStatusResponse> getSubmissionStatus(Long assignmentId, Long courseId) {
-        List<Student> students = studentRepository.findByCourseId(courseId);
+    public List<SubmissionStatusResponse> getSubmissionStatus(UUID assignmentId, UUID courseId) {
+        List<Student> students = studentRepository.findByClazzId(courseId);
 
         return students.stream()
             .map(student -> {
@@ -97,7 +98,7 @@ public class SubmissionService {
             .toList();
     }
 
-    public SubmissionResponse getMySubmissionForAssignment(Long assignmentId, Student student) {
+    public SubmissionResponse getMySubmissionForAssignment(UUID assignmentId, Student student) {
         Submission submission = submissionRepository
             .findByAssignmentIdAndStudentId(assignmentId, student.getId())
             .orElseThrow(() -> new CustomException(ErrorType.SUBMISSION_NOT_FOUND));

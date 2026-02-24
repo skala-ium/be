@@ -5,12 +5,13 @@ import com.example.skala_ium.assignment.dto.response.AssignmentDashboardResponse
 import com.example.skala_ium.assignment.dto.response.AssignmentDetailResponse;
 import com.example.skala_ium.assignment.dto.response.AssignmentListResponse;
 import com.example.skala_ium.assignment.dto.response.RequirementResponse;
-import java.util.List;
 import com.example.skala_ium.assignment.infrastructure.AssignmentRepository;
 import com.example.skala_ium.global.response.exception.CustomException;
 import com.example.skala_ium.global.response.type.ErrorType;
 import com.example.skala_ium.submission.infrastructure.SubmissionRepository;
 import com.example.skala_ium.user.infrastructure.StudentRepository;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,10 +27,10 @@ public class AssignmentService {
     private final SubmissionRepository submissionRepository;
     private final StudentRepository studentRepository;
 
-    public Page<AssignmentListResponse> getAssignments(Long classId, Pageable pageable) {
-        long totalStudents = studentRepository.countByCourseId(classId);
+    public Page<AssignmentListResponse> getAssignments(UUID classId, Pageable pageable) {
+        long totalStudents = studentRepository.countByClazzId(classId);
 
-        return assignmentRepository.findByCourseId(classId, pageable)
+        return assignmentRepository.findByClazzId(classId, pageable)
             .map(assignment -> {
                 long submissionCount = submissionRepository.countByAssignmentId(assignment.getId());
                 double submissionRate = totalStudents > 0
@@ -37,7 +38,7 @@ public class AssignmentService {
                 return AssignmentListResponse.builder()
                     .assignmentId(assignment.getId())
                     .title(assignment.getTitle())
-                    .classGroup(assignment.getCourse().getClassGroup())
+                    .classGroup(assignment.getClazz().getClassGroup())
                     .deadline(assignment.getDeadline())
                     .submissionRate(submissionRate)
                     .submissionCount(submissionCount)
@@ -49,33 +50,34 @@ public class AssignmentService {
             });
     }
 
-    public List<AssignmentDashboardResponse> getAssignmentDashboard(Long courseId) {
-        long totalStudents = studentRepository.countByCourseId(courseId);
-        List<Assignment> assignments = assignmentRepository.findByCourseId(courseId,
-            org.springframework.data.domain.Pageable.unpaged()).getContent();
+    public List<AssignmentDashboardResponse> getAssignmentDashboard(Long classId) {
+        // long totalStudents = studentRepository.countByClassId(classId);
+        // List<Assignment> assignments = assignmentRepository.findByClassId(classId, org.springframework.data.domain.Pageable.unpaged()).getContent().stream()
+        //     .sorted((a1, a2) -> a1.getDeadline().compareTo(a2.getDeadline()));
 
-        return assignments.stream()
-            .map(assignment -> {
-                long submissionCount = submissionRepository.countByAssignmentId(assignment.getId());
-                return AssignmentDashboardResponse.builder()
-                    .assignmentId(assignment.getId())
-                    .title(assignment.getTitle())
-                    .deadline(assignment.getDeadline())
-                    .submissionCount(submissionCount)
-                    .totalStudents(totalStudents)
-                    .unsubmittedCount(totalStudents - submissionCount)
-                    .build();
-            })
-            .toList();
+        // return assignments.stream()
+        //     .map(assignment -> {
+        //         long submissionCount = submissionRepository.countByAssignmentId(assignment.getId());
+        //         return AssignmentDashboardResponse.builder()
+        //             .assignmentId(assignment.getId())
+        //             .title(assignment.getTitle())
+        //             .deadline(assignment.getDeadline())
+        //             .submissionCount(submissionCount)
+        //             .totalStudents(totalStudents)
+        //             .unsubmittedCount(totalStudents - submissionCount)
+        //             .build();
+        //     })
+        //     .toList();
+        return null;
     }
 
-    public AssignmentDetailResponse getAssignmentDetail(Long assignmentId) {
+    public AssignmentDetailResponse getAssignmentDetail(UUID assignmentId) {
         Assignment assignment = assignmentRepository.findWithDetailsById(assignmentId)
             .orElseThrow(() -> new CustomException(ErrorType.ASSIGNMENT_NOT_FOUND));
 
         return AssignmentDetailResponse.builder()
             .assignmentId(assignment.getId())
-            .courseName(assignment.getCourse().getClassName())
+            .courseName(assignment.getClazz().getClassName())
             .title(assignment.getTitle())
             .description(assignment.getContent())
             .topic(assignment.getTopic())

@@ -1,19 +1,21 @@
 package com.example.skala_ium.submission.infrastructure;
 
 import com.example.skala_ium.submission.domain.entity.Submission;
-import java.util.List;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface SubmissionRepository extends JpaRepository<Submission, Long> {
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
-    long countByAssignmentId(Long assignmentId);
+public interface SubmissionRepository extends JpaRepository<Submission, UUID> {
 
-    Optional<Submission> findByAssignmentIdAndStudentId(Long assignmentId, Long studentId);
+    long countByAssignmentId(UUID assignmentId);
 
-    List<Submission> findByAssignmentId(Long assignmentId);
+    Optional<Submission> findByAssignmentIdAndStudentId(UUID assignmentId, UUID studentId);
 
-    List<Submission> findByStudentId(Long studentId);
+    List<Submission> findByAssignmentId(UUID assignmentId);
 
-    boolean existsByAssignmentIdAndStudentId(Long assignmentId, Long studentId);
+    List<Submission> findByStudentId(UUID studentId);
+
+    boolean existsByAssignmentIdAndStudentId(UUID assignmentId, UUID studentId);
 }

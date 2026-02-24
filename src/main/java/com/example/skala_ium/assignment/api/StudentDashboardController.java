@@ -8,6 +8,7 @@ import com.example.skala_ium.global.response.type.SuccessType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "학생 대시보드 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/courses/{courseId}/assignments")
+@RequestMapping("/api/v1/courses/{classId}/assignments")
 public class StudentDashboardController {
 
     private final StudentDashboardService studentDashboardService;
@@ -26,11 +27,11 @@ public class StudentDashboardController {
     @Operation(summary = "내 과제 현황 조회 (학생)")
     @GetMapping("/me")
     public ApiResponse<List<StudentAssignmentResponse>> getMyAssignments(
-        @PathVariable Long courseId,
+        @PathVariable UUID classId,
         @AuthenticationPrincipal CustomerDetails customerDetails
     ) {
         List<StudentAssignmentResponse> response = studentDashboardService
-            .getMyAssignments(customerDetails.getAuthenticatable(), courseId);
+            .getMyAssignments(customerDetails.getAuthenticatable(), classId);
         return ApiResponse.success(SuccessType.OK, response);
     }
 }

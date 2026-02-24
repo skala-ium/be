@@ -1,8 +1,10 @@
 package com.example.skala_ium.global.auth.security;
 
+import java.util.UUID;
+
 public interface Authenticatable {
 
-    Long getId();
+    UUID getId();
 
     String getName();
 

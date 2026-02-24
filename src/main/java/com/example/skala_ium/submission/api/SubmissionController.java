@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +37,7 @@ public class SubmissionController {
     @Operation(summary = "과제 제출")
     @PostMapping("/assignments/{assignmentId}/submissions")
     public ApiResponse<?> submitAssignment(
-        @PathVariable Long assignmentId,
+        @PathVariable UUID assignmentId,
         @AuthenticationPrincipal CustomerDetails customerDetails,
         @Valid @RequestBody CreateSubmissionRequest request
     ) {
@@ -48,7 +49,7 @@ public class SubmissionController {
     @Operation(summary = "과제별 제출 목록 조회 (교수용)")
     @GetMapping("/assignments/{assignmentId}/submissions")
     public ApiResponse<List<SubmissionResponse>> getSubmissions(
-        @PathVariable Long assignmentId
+        @PathVariable UUID assignmentId
     ) {
         List<SubmissionResponse> response = submissionService.getSubmissionsByAssignment(assignmentId);
         return ApiResponse.success(SuccessType.OK, response);
@@ -57,8 +58,8 @@ public class SubmissionController {
     @Operation(summary = "과제별 제출 현황 조회 (전체 학생 O/X)")
     @GetMapping("/assignments/{assignmentId}/submissions/status")
     public ApiResponse<List<SubmissionStatusResponse>> getSubmissionStatus(
-        @PathVariable Long assignmentId,
-        @RequestParam Long courseId
+        @PathVariable UUID assignmentId,
+        @RequestParam UUID courseId
     ) {
         List<SubmissionStatusResponse> response = submissionService.getSubmissionStatus(assignmentId, courseId);
         return ApiResponse.success(SuccessType.OK, response);
@@ -67,7 +68,7 @@ public class SubmissionController {
     @Operation(summary = "내 제출 조회 (특정 과제)")
     @GetMapping("/assignments/{assignmentId}/submissions/me")
     public ApiResponse<SubmissionResponse> getMySubmissionForAssignment(
-        @PathVariable Long assignmentId,
+        @PathVariable UUID assignmentId,
         @AuthenticationPrincipal CustomerDetails customerDetails
     ) {
         Student student = requireStudent(customerDetails);

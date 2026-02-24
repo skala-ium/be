@@ -3,23 +3,18 @@ package com.example.skala_ium.global.auth.jwt;
 import static com.example.skala_ium.global.auth.jwt.entity.TokenType.ACCESS_TOKEN;
 
 import com.example.skala_ium.global.auth.jwt.component.JwtTokenProvider;
-import com.example.skala_ium.global.response.ApiResponse;
-import com.example.skala_ium.global.response.exception.CustomException;
-import com.example.skala_ium.global.response.type.ErrorType;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @RequiredArgsConstructor
@@ -27,63 +22,44 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
-    private static final List<AntPathRequestMatcher> ALLOWED_URLS = Arrays.asList(
-        new AntPathRequestMatcher("/swagger-ui/**"),
-        new AntPathRequestMatcher("/swagger-ui.html"),
-        new AntPathRequestMatcher("/v3/api-docs/**"),
-        new AntPathRequestMatcher("/webjars/**"),
-        new AntPathRequestMatcher("/swagger-resources/**"),
-        new AntPathRequestMatcher("/api/v1/auth/**"),
-        new AntPathRequestMatcher("/api/v1/users/sign-up")
+    private static final List<String> ALLOWED_PATHS = List.of(
+        "/swagger-ui/**",
+        "/swagger-ui.html",
+        "/v3/api-docs/**",
+        "/swagger-resources/**",
+        "/api/v1/auth/**",
+        "/api/v1/users/sign-up"
     );
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        return ALLOWED_PATHS.stream()
+            .anyMatch(pattern -> pathMatcher.match(pattern, path));
+    }
+
+    @Override
     protected void doFilterInternal(
-        @NonNull HttpServletRequest servletRequest,
-        @NonNull HttpServletResponse servletResponse,
+        @NonNull HttpServletRequest request,
+        @NonNull HttpServletResponse response,
         FilterChain filterChain
     ) throws ServletException, IOException {
 
-        String accessToken = jwtTokenProvider.extractTokenFromCookies(servletRequest, ACCESS_TOKEN);
+        String accessToken = jwtTokenProvider.extractTokenFromCookies(request, ACCESS_TOKEN);
 
-        if (isAllowedUrl(servletRequest)) {
-            filterChain.doFilter(servletRequest, servletResponse);
-            return;
-        }
-        try {
-            if (accessToken != null && jwtTokenProvider.validateToken(accessToken)) {
-                authenticateWithAccessToken(accessToken);
-            } else {
-                throw new CustomException(ErrorType.EXPIRED_ACCESS_TOKEN);
+        if (accessToken != null && jwtTokenProvider.validateToken(accessToken)) {
+            try {
+                Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } catch (Exception e) {
+                log.warn("JWT 인증 처리 중 예외 발생, 비인증 상태로 진행: {}", e.getMessage());
             }
-            filterChain.doFilter(servletRequest, servletResponse);
-        } catch (CustomException e) {
-            handleException(servletResponse, e);
         }
+
+        filterChain.doFilter(request, response);
     }
 
-    private void authenticateWithAccessToken(String accessToken) {
-        Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
 
-    private void handleException(HttpServletResponse response, CustomException e)
-        throws IOException {
-        if (e != null) {
-            response.setContentType("application/json");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setCharacterEncoding("UTF-8");
-            String jsonResponse = new ObjectMapper().writeValueAsString(
-                ApiResponse.error(e.getErrorType())
-            );
-            response.getWriter().write(jsonResponse);
-        } else {
-            response.getWriter().write("{\"error\": \"An unexpected error occurred.\"}");
-        }
-    }
-
-    private boolean isAllowedUrl(HttpServletRequest request) {
-        return ALLOWED_URLS.stream().anyMatch(matcher -> matcher.matches(request));
-    }
 }
