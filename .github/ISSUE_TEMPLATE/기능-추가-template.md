@@ -1,5 +1,5 @@
 ---
-name: 기능 추가 Templae
+name: 기능 추가 Template
 about: Suggest an idea for this project
 title: ''
 labels: ''
