@@ -13,10 +13,10 @@ import org.springframework.data.repository.query.Param;
 
 public interface AssignmentRepository extends JpaRepository<Assignment, UUID> {
 
-    @EntityGraph(attributePaths = {"classes", "professor"})
+    @EntityGraph(attributePaths = {"clazz", "professor"})
     Page<Assignment> findByClazzId(UUID classId, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"requirements", "classes", "professor"})
+    @EntityGraph(attributePaths = {"requirements", "clazz", "professor"})
     Optional<Assignment> findWithDetailsById(UUID id);
 
     long countByProfessorId(UUID professorId);
