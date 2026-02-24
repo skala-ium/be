@@ -1,5 +1,5 @@
 ---
-name: 기능 추가 Template
+name: PULL_REQUEST_TEMPLATE.md
 about: Suggest an idea for this project
 title: ''
 labels: ''
