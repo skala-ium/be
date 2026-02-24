@@ -1,6 +1,6 @@
-package com.example.skala_ium.class_.domain.entity;
+package com.example.skala_ium.clazz.domain.entity;
 
-import com.example.skala_ium.class_.domain.ClassGroup;
+import com.example.skala_ium.clazz.domain.ClassGroup;
 import com.example.skala_ium.global.entity.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,21 +10,22 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "course")
+@Table(name = "classes")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Course extends BaseTimeEntity {
+public class Clazz extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "class_id")
-    private Long id;
+    private UUID id;
 
     @Column(name = "class_name", nullable = false, length = 100)
     private String className;
@@ -37,7 +38,7 @@ public class Course extends BaseTimeEntity {
     private ClassGroup classGroup;
 
     @Builder
-    public Course(String className, Integer generation, ClassGroup classGroup) {
+    public Clazz(String className, Integer generation, ClassGroup classGroup) {
         this.className = className;
         this.generation = generation;
         this.classGroup = classGroup;

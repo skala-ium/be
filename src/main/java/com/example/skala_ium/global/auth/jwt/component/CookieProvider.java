@@ -21,7 +21,7 @@ public class CookieProvider {
         Cookie cookie = new Cookie(name, value);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
-        cookie.setAttribute("SameSite", "None");
+        cookie.setAttribute("SameSite", "Lax");
         cookie.setMaxAge((int) maxAge / MILLIS_PER_SECOND);
         cookie.setSecure(secureCookie);
         return cookie;

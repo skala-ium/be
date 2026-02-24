@@ -2,7 +2,6 @@ package com.example.skala_ium.global.config;
 
 import com.example.skala_ium.global.auth.jwt.JwtAuthenticationFilter;
 import com.example.skala_ium.global.auth.jwt.component.JwtTokenProvider;
-import com.example.skala_ium.global.auth.security.Role;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +40,7 @@ public class SecurityConfig {
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers("/api/v1/users/sign-up").permitAll()
                 .requestMatchers("/api/v1/auth/**").permitAll()
-                .anyRequest().hasAuthority(Role.USER.getRole())
+                .anyRequest().permitAll()
             )
             // JWT 인증을 위하여 직접 구현한 필터를 UsernamePasswordAuthenticationFilter 전에 실행
             .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),

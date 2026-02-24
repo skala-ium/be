@@ -1,6 +1,6 @@
 package com.example.skala_ium.assignment.domain.entity;
 
-import com.example.skala_ium.class_.domain.entity.Course;
+import com.example.skala_ium.clazz.domain.entity.Clazz;
 import com.example.skala_ium.global.entity.BaseTimeEntity;
 import com.example.skala_ium.user.domain.entity.Professor;
 import jakarta.persistence.CascadeType;
@@ -17,6 +17,7 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,13 +30,13 @@ import lombok.NoArgsConstructor;
 public class Assignment extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "assignment_id")
-    private Long id;
+    private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "class_id")
-    private Course course;
+    private Clazz clazz;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "professor_id")
@@ -60,9 +61,9 @@ public class Assignment extends BaseTimeEntity {
     private List<AssignmentRequirement> requirements = new ArrayList<>();
 
     @Builder
-    public Assignment(Course course, Professor professor, String title, String content,
+    public Assignment(Clazz clazz, Professor professor, String title, String content,
                       LocalDateTime deadline, String slackPostTs, String topic) {
-        this.course = course;
+        this.clazz = clazz;
         this.professor = professor;
         this.title = title;
         this.content = content;

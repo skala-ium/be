@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
@@ -24,8 +26,8 @@ public class AssignmentController implements AssignmentControllerDocs {
     @GetMapping("/classes/{classId}/assignments")
     public ApiResponse<Page<AssignmentListResponse>>
     getAssignments(
-        @PathVariable Long classId,
-        Pageable pageable
+            @PathVariable UUID classId,
+            Pageable pageable
     ) {
         Page<AssignmentListResponse> assignments = assignmentService.getAssignments(classId, pageable);
         return ApiResponse.success(SuccessType.OK, assignments);
@@ -34,7 +36,7 @@ public class AssignmentController implements AssignmentControllerDocs {
     @Override
     @GetMapping("/assignments/{assignmentId}")
     public ApiResponse<AssignmentDetailResponse> getAssignmentDetail(
-        @PathVariable Long assignmentId
+            @PathVariable UUID assignmentId
     ) {
         AssignmentDetailResponse response = assignmentService.getAssignmentDetail(assignmentId);
         return ApiResponse.success(SuccessType.OK, response);
