@@ -6,7 +6,6 @@ import com.example.skala_ium.submission.application.AiVerificationService;
 import com.example.skala_ium.submission.dto.response.VerificationResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,14 +23,14 @@ public class VerificationController {
 
     @Operation(summary = "AI 요구사항 검증 실행")
     @PostMapping("/verify")
-    public ApiResponse<VerificationResponse> verify(@PathVariable UUID submissionId) {
+    public ApiResponse<VerificationResponse> verify(@PathVariable Long submissionId) {
         VerificationResponse response = aiVerificationService.verify(submissionId);
         return ApiResponse.success(SuccessType.OK, response);
     }
 
     @Operation(summary = "검증 결과 조회")
     @GetMapping("/verification")
-    public ApiResponse<VerificationResponse> getVerification(@PathVariable UUID submissionId) {
+    public ApiResponse<VerificationResponse> getVerification(@PathVariable Long submissionId) {
         VerificationResponse response = aiVerificationService.getVerification(submissionId);
         return ApiResponse.success(SuccessType.OK, response);
     }

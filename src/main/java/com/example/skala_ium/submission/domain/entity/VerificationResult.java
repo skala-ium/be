@@ -7,7 +7,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,7 +24,7 @@ public class VerificationResult {
     private Long id;
 
     @Column(name = "submission_id", nullable = false)
-    private UUID submissionId;
+    private Long submissionId;
 
     @Column(name = "requirement_id", nullable = false)
     private Long requirementId;
@@ -40,7 +39,7 @@ public class VerificationResult {
     private LocalDateTime verifiedAt;
 
     @Builder
-    public VerificationResult(UUID submissionId, Long requirementId, Boolean isMet,
+    public VerificationResult(Long submissionId, Long requirementId, Boolean isMet,
                               String feedback, LocalDateTime verifiedAt) {
         this.submissionId = submissionId;
         this.requirementId = requirementId;
