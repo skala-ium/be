@@ -30,6 +30,9 @@ public class Clazz extends BaseTimeEntity {
     @Column(name = "class_name", nullable = false, length = 100)
     private String className;
 
+    @Column(name = "slack_channel_id", unique = true, length = 50)
+    private String slackChannelId;
+
     @Column(name = "generation")
     private Integer generation;
 

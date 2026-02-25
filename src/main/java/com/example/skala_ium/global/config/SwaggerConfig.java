@@ -18,17 +18,13 @@ public class SwaggerConfig {
     @Value("${swagger.server.url}")
     private String swaggerServerUrl;
 
-    @Value("${swagger.server.description}")
-    private String swaggerServerDescription;
-
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
             .info(apiInfo())
             .components(createComponents())
             .addSecurityItem(createSecurityRequirement())
-            .servers(List.of(new Server().url(swaggerServerUrl)
-                .description(swaggerServerDescription))); // 설정 파일에서 읽어옴
+            .servers(List.of(new Server().url(swaggerServerUrl)));
     }
 
     private static SecurityRequirement createSecurityRequirement() {
