@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -45,7 +44,7 @@ public class AiVerificationService {
         this.objectMapper = objectMapper;
     }
 
-    public VerificationResponse verify(UUID submissionId) {
+    public VerificationResponse verify(Long submissionId) {
         Submission submission = submissionRepository.findById(submissionId)
             .orElseThrow(() -> new CustomException(ErrorType.SUBMISSION_NOT_FOUND));
 
@@ -120,7 +119,7 @@ public class AiVerificationService {
     }
 
     @Transactional(readOnly = true)
-    public VerificationResponse getVerification(UUID submissionId) {
+    public VerificationResponse getVerification(Long submissionId) {
         Submission submission = submissionRepository.findById(submissionId)
             .orElseThrow(() -> new CustomException(ErrorType.SUBMISSION_NOT_FOUND));
 
