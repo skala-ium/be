@@ -16,10 +16,16 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 public interface AssignmentControllerDocs {
 
     @Operation(summary = "특정 강의의 과제 목록 조회 (페이징)")
-    ApiResponse<Page<AssignmentListResponse>> getAssignments(UUID classesId, Pageable pageable);
+    ApiResponse<Page<AssignmentListResponse>> getAssignments(
+        UUID classesId, Pageable pageable,
+        @AuthenticationPrincipal CustomerDetails customerDetails
+    );
 
     @Operation(summary = "과제 상세 조회")
-    ApiResponse<AssignmentDetailResponse> getAssignmentDetail(UUID assignmentId);
+    ApiResponse<AssignmentDetailResponse> getAssignmentDetail(
+        UUID assignmentId,
+        @AuthenticationPrincipal CustomerDetails customerDetails
+    );
 
     @Operation(summary = "교수용 대시보드 조회")
     ApiResponse<DashboardResponse> getDashBoardInfo(

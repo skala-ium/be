@@ -30,18 +30,22 @@ public class AssignmentController implements AssignmentControllerDocs {
     public ApiResponse<Page<AssignmentListResponse>>
     getAssignments(
         @PathVariable UUID classId,
-        Pageable pageable
+        Pageable pageable,
+        @AuthenticationPrincipal CustomerDetails customerDetails
     ) {
-        Page<AssignmentListResponse> assignments = assignmentService.getAssignments(classId, pageable);
+        Professor professor = (Professor) customerDetails.getAuthenticatable();
+        Page<AssignmentListResponse> assignments = assignmentService.getAssignments(classId, professor.getId(), pageable);
         return ApiResponse.success(SuccessType.OK, assignments);
     }
 
     @Override
     @GetMapping("/assignments/{assignmentId}")
     public ApiResponse<AssignmentDetailResponse> getAssignmentDetail(
-        @PathVariable UUID assignmentId
+        @PathVariable UUID assignmentId,
+        @AuthenticationPrincipal CustomerDetails customerDetails
     ) {
-        AssignmentDetailResponse response = assignmentService.getAssignmentDetail(assignmentId);
+        Professor professor = (Professor) customerDetails.getAuthenticatable();
+        AssignmentDetailResponse response = assignmentService.getAssignmentDetail(assignmentId, professor.getId());
         return ApiResponse.success(SuccessType.OK, response);
     }
 
