@@ -32,10 +32,10 @@ public class AssignmentService {
     private final SubmissionRepository submissionRepository;
     private final StudentRepository studentRepository;
 
-    public Page<AssignmentListResponse> getAssignments(UUID classId, Pageable pageable) {
+    public Page<AssignmentListResponse> getAssignments(UUID classId, UUID professorId, Pageable pageable) {
         long totalStudents = studentRepository.countByClazzId(classId);
 
-        return assignmentRepository.findByClazzId(classId, pageable)
+        return assignmentRepository.findByClazzIdAndProfessorId(classId, professorId, pageable)
             .map(assignment -> {
                 long submissionCount = submissionRepository.countByAssignmentId(assignment.getId());
                 double submissionRate = totalStudents > 0
@@ -130,8 +130,8 @@ public class AssignmentService {
             .build();
     }
 
-    public AssignmentDetailResponse getAssignmentDetail(UUID assignmentId) {
-        Assignment assignment = assignmentRepository.findWithDetailsById(assignmentId)
+    public AssignmentDetailResponse getAssignmentDetail(UUID assignmentId, UUID professorId) {
+        Assignment assignment = assignmentRepository.findByIdAndProfessorId(assignmentId, professorId)
             .orElseThrow(() -> new CustomException(ErrorType.ASSIGNMENT_NOT_FOUND));
 
         return AssignmentDetailResponse.builder()

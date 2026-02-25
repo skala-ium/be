@@ -16,8 +16,11 @@ public interface AssignmentRepository extends JpaRepository<Assignment, UUID> {
     @EntityGraph(attributePaths = {"clazz", "professor"})
     Page<Assignment> findByClazzId(UUID classId, Pageable pageable);
 
+    @EntityGraph(attributePaths = {"clazz", "professor"})
+    Page<Assignment> findByClazzIdAndProfessorId(UUID classId, UUID professorId, Pageable pageable);
+
     @EntityGraph(attributePaths = {"requirements", "clazz", "professor"})
-    Optional<Assignment> findWithDetailsById(UUID id);
+    Optional<Assignment> findByIdAndProfessorId(UUID id, UUID professorId);
 
     long countByProfessorId(UUID professorId);
 
