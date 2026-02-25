@@ -24,10 +24,12 @@ public class GlobalResponseAdvice implements ResponseBodyAdvice<Object> {
 
     // 응답 본문이 작성되기 전에 호출되어 최종 응답을 변경
     @Override
-    public Object beforeBodyWrite(Object body, MethodParameter returnType,
+    public Object beforeBodyWrite(
+        Object body, MethodParameter returnType,
         MediaType selectedContentType,
         Class<? extends HttpMessageConverter<?>> selectedConverterType,
-        ServerHttpRequest request, ServerHttpResponse response) {
+        ServerHttpRequest request, ServerHttpResponse response
+    ) {
         if (body instanceof ApiResponse) {
             ApiResponse<?> apiResponse = (ApiResponse<?>) body;
             response.setStatusCode(apiResponse.httpStatusCode());
