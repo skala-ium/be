@@ -1,16 +1,21 @@
 package com.example.skala_ium.assignment.application;
 
 import com.example.skala_ium.assignment.domain.entity.Assignment;
+import com.example.skala_ium.assignment.domain.entity.AssignmentRequirement;
+import com.example.skala_ium.assignment.dto.request.CreateAssignmentRequest;
 import com.example.skala_ium.assignment.dto.response.AssignmentDetailResponse;
 import com.example.skala_ium.assignment.dto.response.AssignmentListResponse;
 import com.example.skala_ium.assignment.dto.response.RequirementResponse;
 import com.example.skala_ium.assignment.dto.response.dashboard.DashboardResponse;
 import com.example.skala_ium.assignment.dto.response.dashboard.DashboardResponse.Summary;
 import com.example.skala_ium.assignment.infrastructure.AssignmentRepository;
+import com.example.skala_ium.clazz.domain.entity.Clazz;
+import com.example.skala_ium.clazz.infrastructure.ClassRepository;
 import com.example.skala_ium.global.response.exception.CustomException;
 import com.example.skala_ium.global.response.type.ErrorType;
 import com.example.skala_ium.submission.domain.entity.SubmissionStatus;
 import com.example.skala_ium.submission.infrastructure.SubmissionRepository;
+import com.example.skala_ium.user.domain.entity.Professor;
 import com.example.skala_ium.user.infrastructure.StudentRepository;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +36,35 @@ public class AssignmentService {
     private final AssignmentRepository assignmentRepository;
     private final SubmissionRepository submissionRepository;
     private final StudentRepository studentRepository;
+    private final ClassRepository classRepository;
+
+    @Transactional
+    public void createAssignment(CreateAssignmentRequest request, Professor professor) {
+        Clazz clazz = classRepository.findById(request.classId())
+            .orElseThrow(() -> new CustomException(ErrorType.COURSE_NOT_FOUND));
+
+        Assignment assignment = Assignment.builder()
+            .clazz(clazz)
+            .professor(professor)
+            .title(request.title())
+            .content(request.description())
+            .topic(request.topic())
+            .deadline(request.deadline())
+            .build();
+
+        if (request.requirements() != null) {
+            request.requirements().forEach(content ->
+                assignment.getRequirements().add(
+                    AssignmentRequirement.builder()
+                        .assignment(assignment)
+                        .content(content)
+                        .build()
+                )
+            );
+        }
+
+        assignmentRepository.save(assignment);
+    }
 
     public Page<AssignmentListResponse> getAssignments(UUID classId, UUID professorId, Pageable pageable) {
         long totalStudents = studentRepository.countByClazzId(classId);
