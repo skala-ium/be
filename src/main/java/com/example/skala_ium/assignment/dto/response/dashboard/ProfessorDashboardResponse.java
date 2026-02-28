@@ -6,19 +6,17 @@ import java.util.UUID;
 import lombok.Builder;
 
 @Builder
-public record DashboardResponse(
+public record ProfessorDashboardResponse(
     Summary summary,
     List<RecentSubmission> recentSubmissions,
     List<AssignmentSubmissionRate> assignmentSubmissionRates
 ) {
-
     @Builder
     public record Summary(
         long totalAssignments,
         long pendingReviewCount,
         long overallSubmissionRate
-    ) {
-    }
+    ) {}
 
     @Builder
     public record RecentSubmission(
@@ -27,14 +25,12 @@ public record DashboardResponse(
         LocalDateTime submittedAt,
         String fileName,
         String fileUrl
-    ) {
-    }
+    ) {}
 
     @Builder
     public record AssignmentSubmissionRate(
         UUID assignmentId,
         String assignmentName,
         long submissionRate
-    ) {
-    }
+    ) {}
 }

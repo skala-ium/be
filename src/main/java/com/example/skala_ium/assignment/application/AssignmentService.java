@@ -6,8 +6,10 @@ import com.example.skala_ium.assignment.dto.request.CreateAssignmentRequest;
 import com.example.skala_ium.assignment.dto.response.AssignmentDetailResponse;
 import com.example.skala_ium.assignment.dto.response.AssignmentListResponse;
 import com.example.skala_ium.assignment.dto.response.RequirementResponse;
-import com.example.skala_ium.assignment.dto.response.dashboard.DashboardResponse;
-import com.example.skala_ium.assignment.dto.response.dashboard.DashboardResponse.Summary;
+import com.example.skala_ium.assignment.dto.response.dashboard.ProfessorDashboardResponse;
+import com.example.skala_ium.assignment.dto.response.dashboard.ProfessorDashboardResponse.Summary;
+import com.example.skala_ium.assignment.dto.response.dashboard.ProfessorDashboardResponse.RecentSubmission;
+import com.example.skala_ium.assignment.dto.response.dashboard.ProfessorDashboardResponse.AssignmentSubmissionRate;
 import com.example.skala_ium.assignment.infrastructure.AssignmentRepository;
 import com.example.skala_ium.clazz.domain.entity.Clazz;
 import com.example.skala_ium.clazz.infrastructure.ClassRepository;
@@ -89,7 +91,7 @@ public class AssignmentService {
             });
     }
 
-    public DashboardResponse getDashboard(UUID professorId) {
+    public ProfessorDashboardResponse getDashboard(UUID professorId) {
         long totalAssignments = assignmentRepository.countByProfessorId(professorId);
         long pendingReviewCount = submissionRepository.countPendingByAssignmentProfessorId(
             professorId, SubmissionStatus.SUBMITTED);
@@ -110,10 +112,10 @@ public class AssignmentService {
             .overallSubmissionRate(overallRate)
             .build();
 
-        List<DashboardResponse.RecentSubmission> recentSubmissions =
+        List<RecentSubmission> recentSubmissions =
             submissionRepository.findRecentByAssignmentProfessorId(professorId, PageRequest.of(0, 10))
                 .stream()
-                .map(s -> DashboardResponse.RecentSubmission.builder()
+                .map(s -> RecentSubmission.builder()
                     .studentName(s.getStudent().getName())
                     .assignmentTitle(s.getAssignment().getTitle())
                     .submittedAt(s.getSubmittedAt())
@@ -124,7 +126,7 @@ public class AssignmentService {
 
         List<Assignment> top5 = assignmentRepository.findTop5ByProfessorId(professorId, PageRequest.of(0, 5));
 
-        List<DashboardResponse.AssignmentSubmissionRate> rates;
+        List<AssignmentSubmissionRate> rates;
         if (top5.isEmpty()) {
             rates = List.of();
         } else {
@@ -148,7 +150,7 @@ public class AssignmentService {
                     long count = countMap.getOrDefault(a.getId(), 0L);
                     long students = studentCountByClass.getOrDefault(a.getClazz().getId(), 0L);
                     long rate = Math.round(students > 0 ? (double) count / students * 100.0 : 0.0);
-                    return DashboardResponse.AssignmentSubmissionRate.builder()
+                    return AssignmentSubmissionRate.builder()
                         .assignmentId(a.getId())
                         .assignmentName(a.getTitle())
                         .submissionRate(rate)
@@ -157,7 +159,7 @@ public class AssignmentService {
                 .toList();
         }
 
-        return DashboardResponse.builder()
+        return ProfessorDashboardResponse.builder()
             .summary(summary)
             .recentSubmissions(recentSubmissions)
             .assignmentSubmissionRates(rates)

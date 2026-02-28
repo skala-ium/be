@@ -4,7 +4,7 @@ import com.example.skala_ium.assignment.application.AssignmentService;
 import com.example.skala_ium.assignment.dto.request.CreateAssignmentRequest;
 import com.example.skala_ium.assignment.dto.response.AssignmentDetailResponse;
 import com.example.skala_ium.assignment.dto.response.AssignmentListResponse;
-import com.example.skala_ium.assignment.dto.response.dashboard.DashboardResponse;
+import com.example.skala_ium.assignment.dto.response.dashboard.ProfessorDashboardResponse;
 import com.example.skala_ium.global.auth.security.CustomerDetails;
 import com.example.skala_ium.global.response.ApiResponse;
 import com.example.skala_ium.global.response.type.SuccessType;
@@ -67,11 +67,11 @@ public class AssignmentController implements AssignmentControllerDocs {
 
     @Override
     @GetMapping("/dashboard")
-    public ApiResponse<DashboardResponse> getDashBoardInfo(
+    public ApiResponse<ProfessorDashboardResponse> getDashBoardInfo(
         @AuthenticationPrincipal CustomerDetails customerDetails
     ) {
         Professor professor = (Professor) customerDetails.getAuthenticatable();
-        DashboardResponse response = assignmentService.getDashboard(professor.getId());
+        ProfessorDashboardResponse response = assignmentService.getDashboard(professor.getId());
         return ApiResponse.success(SuccessType.OK, response);
     }
 }
