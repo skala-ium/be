@@ -12,6 +12,7 @@ import com.example.skala_ium.global.response.type.ErrorType;
 import com.example.skala_ium.submission.domain.entity.Submission;
 import com.example.skala_ium.submission.infrastructure.SubmissionRepository;
 import com.example.skala_ium.user.domain.entity.Student;
+import com.example.skala_ium.user.infrastructure.StudentRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -34,6 +35,7 @@ public class StudentDashboardService {
 
     private final AssignmentRepository assignmentRepository;
     private final SubmissionRepository submissionRepository;
+    private final StudentRepository studentRepository;
 
     public StudentDashboardResponse getStudentDashboard(Authenticatable authenticatable) {
         Student student = requireStudent(authenticatable);
@@ -117,9 +119,10 @@ public class StudentDashboardService {
     }
 
     private Student requireStudent(Authenticatable authenticatable) {
-        if (authenticatable instanceof Student student) {
-            return student;
+        if (!(authenticatable instanceof Student)) {
+            throw new CustomException(ErrorType.INVALID_ROLE);
         }
-        throw new CustomException(ErrorType.INVALID_ROLE);
+        return studentRepository.findById(authenticatable.getId())
+            .orElseThrow(() -> new CustomException(ErrorType.INVALID_ROLE));
     }
 }
