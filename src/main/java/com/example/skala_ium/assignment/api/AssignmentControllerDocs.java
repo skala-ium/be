@@ -3,7 +3,7 @@ package com.example.skala_ium.assignment.api;
 import com.example.skala_ium.assignment.dto.request.CreateAssignmentRequest;
 import com.example.skala_ium.assignment.dto.response.AssignmentDetailResponse;
 import com.example.skala_ium.assignment.dto.response.AssignmentListResponse;
-import com.example.skala_ium.assignment.dto.response.dashboard.DashboardResponse;
+import com.example.skala_ium.assignment.dto.response.dashboard.ProfessorDashboardResponse;
 import com.example.skala_ium.global.auth.security.CustomerDetails;
 import com.example.skala_ium.global.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,7 +35,7 @@ public interface AssignmentControllerDocs {
     );
 
     @Operation(summary = "교수용 대시보드 조회")
-    ApiResponse<DashboardResponse> getDashBoardInfo(
+    ApiResponse<ProfessorDashboardResponse> getDashBoardInfo(
         @AuthenticationPrincipal CustomerDetails customerDetails
     );
 }
