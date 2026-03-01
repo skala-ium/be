@@ -1,6 +1,7 @@
 package com.example.skala_ium.user.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import java.util.UUID;
 
 public record SignUpRequest(
     @NotBlank(message = "이름은 필수입니다.")
@@ -17,6 +18,7 @@ public record SignUpRequest(
 
     // Student 전용 필드
     String slackUserId,
-    String major
+    String major,
+    UUID classId
 ) {
 }

@@ -3,6 +3,8 @@ package com.example.skala_ium.user.application;
 import static com.example.skala_ium.global.auth.jwt.entity.TokenType.ACCESS_TOKEN;
 import static com.example.skala_ium.global.auth.jwt.entity.TokenType.REFRESH_TOKEN;
 
+import com.example.skala_ium.clazz.domain.entity.Clazz;
+import com.example.skala_ium.clazz.infrastructure.ClassRepository;
 import com.example.skala_ium.global.auth.jwt.component.CookieProvider;
 import com.example.skala_ium.global.auth.jwt.component.JwtTokenProvider;
 import com.example.skala_ium.global.auth.jwt.entity.JwtToken;
@@ -31,6 +33,7 @@ public class AuthService {
 
     private final ProfessorRepository professorRepository;
     private final StudentRepository studentRepository;
+    private final ClassRepository classRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final CookieProvider cookieProvider;
@@ -59,11 +62,17 @@ public class AuthService {
             if (studentRepository.existsBySlackUserId(request.slackUserId())) {
                 throw new CustomException(ErrorType.DUPLICATE_EMAIL);
             }
+            Clazz clazz = null;
+            if (request.classId() != null) {
+                clazz = classRepository.findById(request.classId())
+                    .orElseThrow(() -> new CustomException(ErrorType.COURSE_NOT_FOUND));
+            }
             Student student = Student.builder()
                 .name(request.name())
                 .slackUserId(request.slackUserId())
                 .password(encodedPassword)
                 .major(request.major())
+                .clazz(clazz)
                 .build();
             studentRepository.save(student);
 
